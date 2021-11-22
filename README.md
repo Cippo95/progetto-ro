@@ -21,6 +21,7 @@ Realizzato al momento un programma Java basic:
 - Realizzata la greedy che prende per il rapporto durata/valore non decrescente più la gestione delle dipendenze.
 
 Commenti generali:
+- Programma principale è il JobMain. DagGenerator è una vecchia prova da rimuovere poi.
 - Per ora durata e valore dei job sono interi come nelle lezioni ma possono essere cambiati in float/double.
 - Il rapporto durata/valore è un double.
 - Politica delle precedenze è un grafo acicilico (in caso contrario avremmo dei deadlock):
