@@ -32,7 +32,7 @@ Commenti generali:
 
 Aggiunte che voglio fare:
 - [x] Argomento per abilitare o disabilitare le stampe a schermo che di sicuro rallentano il programma.
-- [ ] Inserimento tramite un file di testo (interattivo non mi piace, scrivo una volta): da capire jaxb.
+- [x] Inserimento tramite un file di testo (interattivo non mi piace, scrivo una volta).
 - [x] Inserire controllo precedenze, credo a runtime: termino con esito negativo se trovo che non ci sono job candidati (grado 0).
 - [ ] Rappresentazione delle precedenze tramite linguaggio dot che permette una rappresentazione grafica da fare prima del run così anche ad occhio si possono vedere eventuali cicli.
 - [ ] Modello matematico del problema.
