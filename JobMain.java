@@ -1,208 +1,243 @@
 import java.util.*;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+/**
+* JobMain esegue molte cose, abbastanza legate, ho trovato un po' difficile 
+spezzare le cose per cui rimane "monolitico".
+@author Filippo Landi
+*/
 public class JobMain {
 	public static void main(String[] args) throws Exception {
-		//size contiene il numero di job
-		int size = 0;
-		//debug imposta stampate in più
-		boolean debug = false;
-		//count conta il numero di job importati da file
-		int count = 0;
-		//randomTest imposta il test con job e priorità random
-		boolean randomTest = false;
-		//fileLoad imposta la lettura da file dei job e priorità
+		//DEFINIZIONE VARIABILI
+		//true se -j
+		boolean randomGen = false;
+		//true se -f
 		boolean fileLoad = false;
-		//salvo in path il path del file da caricare
-		String path = "";
-		//lista dei job di una mia classe JobIndexed
-		List<JobIndexed> jobs = new ArrayList<JobIndexed>();
+		//true se -debug
+		boolean debug = false;
+		//numero dei job
+		int jobsNumber = 0;
+		//lista dei job
+		List<Job> jobs = new ArrayList<Job>();
 		//matrice delle priorità
-		int [][] array = null;
-		//indexes contiene l'ordine finale di esecuzione dei lavori
+		int [][] matrix = null;
+		//ordine esecuzione lavori
 		int[] indexes;
-		//lista del lavori che possono essere eseguiti in un certo turno
-		List<JobIndexed> ready = new ArrayList<JobIndexed>();
-		//mappatura numero a lavoro, utile alla fine
-		Map<Integer, String> reverseHash = 
-			new Hashtable<Integer, String>();
-		//gestione degli argomenti
+		//lavori grado 0 nel turno
+		List<Job> readyJobs = new ArrayList<Job>();
+		//path del file
+		String filePath = "";
+		//lista dei lavori da file, serve per ricavare l'indice
+		List<String> jobsNames = new ArrayList<String>();
+		//GESTIONE ARGOMENTI
 		for (int i = 0; i < args.length; i++) {
 			String argument = args[i];
 			if (argument.equals("-j") && !fileLoad) {
-				randomTest = true;
-				size = Integer.parseInt(args[i+1]);
+				System.out.println("Generazione random!");	
+				randomGen = true;
+				jobsNumber = Integer.parseInt(args[i+1]);
 				i++;
-			} else if (argument.equals("-f") && !randomTest) {
+			} else if (argument.equals("-f") && !randomGen) {
+				System.out.println("Caricamento da file!");	
 				fileLoad = true;
-				path = args[i+1];
-				i++;	
+				filePath = args[i+1];
+				i++;
 			} else if (argument.equals("-debug")) {
-				debug = true;
 				System.out.println("Stampe di debug attive!");
+				debug = true;
 			} else {
 				System.err.println("Errore negli argomenti: "
-				+ "Usa -j <num> oppure -f <path>");
+				+ "Usa -j NUM oppure -f PATH");
 				return;
 			}
 		}
-		//logica della costruizione random
-		if (randomTest) {
+		//ISTANZIAZIONE RANDOM
+		if (randomGen) {
 			Random random = new Random();
-			for (int j = 0; j < size; j++) {
-				JobIndexed jobItem = new JobIndexed(
-				random.nextInt(100),
-				random.nextInt(100),
-				j);
+			//job random
+			for (int j = 0; j < jobsNumber; j++) {
+				Job jobItem = new Job(
+				j,				//indice
+				random.nextInt(100), 		//durata
+				random.nextInt(100) 		//valore
+				);
 				jobs.add(jobItem);
 			}
-			//mia classe per generare matrice triangolare random
+			//classe generatrice matrice triangolare random
 			RandomDagGenerator generator = 
-				new RandomDagGenerator(size);
-			array = generator.getRandomDag();
+				new RandomDagGenerator(jobsNumber);
+			//matrice random
+			matrix = generator.getRandomDag();
 		}
-		//logica della costruzione caricando da file
+		//ISTANZIAZIONE DA FILE
 		if (fileLoad) {
-			File file = new File(path);
-			//per lettura linea
+			File file = new File(filePath);
 			String line;
-			//mappatura lavoro a numero
-			Map<String, Integer> hash = 
-				new Hashtable<String, Integer>();
-			//lista di liste di priorità, serve per costruire array
-			List<ArrayList<String>> prioList = 
+			//lista delle precedenze dei lavori (lista di liste)
+			List<ArrayList<String>> precList = 
 				new ArrayList<ArrayList<String>>();
-			//lista di priorità del singolo lavoro
-			ArrayList<String> prioWithName;
-			//caricamento file
+			//lista delle precedenze del singolo lavoro
+			ArrayList<String> jobPrec;
 			Scanner sc = new Scanner(file);
+			//salto la prima linea che contiene header
+			line = sc.nextLine();
 			while (sc.hasNextLine()) {
-				prioWithName = new ArrayList<String>();
+				jobPrec = new ArrayList<String>();
 				line = sc.nextLine();
                   		String[] tokens = line.split(",");
-                  		//aggiungo map tra nomi job e numero job
-				hash.put(tokens[0], count);
-				//e viceversa
-				reverseHash.put(count, tokens[0]);
-                 		//creo il job con durata, valore e indice
-                  		JobIndexed jobItem = new JobIndexed(
-                  			Integer.parseInt(tokens[1]), 
-					Integer.parseInt(tokens[2]), 
-					count);
+                  		System.out.println(Arrays.toString(tokens));
+				jobsNames.add(tokens[0]);
+                 		//creo il job con indice, durata e valore
+                  		Job jobItem = new Job(
+                  			//countJobs,
+                  			jobsNumber,
+                  			Integer.parseInt(tokens[1]),
+                  			Integer.parseInt(tokens[2])
+					);
 				//leggo le precedenze
 				for (int j = 3; j < tokens.length; j++) {
-					prioWithName.add(tokens[j]);
+					jobPrec.add(tokens[j]);
 				}
-				prioList.add(prioWithName);
+				precList.add(jobPrec);
 				jobs.add(jobItem);
-				count++;
+				jobsNumber++;
 			}
-			//finito di leggere so il numero di job
-			size = count;
 			if (debug) {
-				System.out.println(prioList);
+				System.out.println("Lista priorità:");
+				System.out.println(precList);
 			}
-			//posso inizializzare la matrice delle precedenze
-			array = new int[size][size];
-			//e popolarla
-			for (int j = 0; j < size; j++) {
-				prioWithName = prioList.get(j);
-				for (int k = 0; k < size; k++) {
-					array[j][k] = 0;
+			//matrice delle precedenze
+			matrix = new int[jobsNumber][jobsNumber];
+			for (int j = 0; j < jobsNumber; j++) {
+				jobPrec = precList.get(j);
+				for (int k = 0; k < jobsNumber; k++) {
+					matrix[j][k] = 0;
 				}
-				for (int k = 0; k < prioWithName.size(); k++) {
-					array[j][hash.get(prioWithName.get(k))] = 
-						1;
+				for (int k = 0; k < jobPrec.size(); k++) {
+					matrix[j][jobsNames.indexOf(
+						jobPrec.get(k))] = 1;
 				}
 			}
 		}
-		if (size == 0) { 
+		if (jobsNumber == 0) { 
 			System.err.println("Nessun lavoro!");
 			return;
 		}
-		//inizializzo la lista di esecuzione
-		indexes = new int[size];
+		//CREAZIONE DEL GRAFICO .DOT
+		try {
+			FileWriter myWriter = new FileWriter("prioGraph.dot");
+			myWriter.write("digraph prioGraph {\n");
+			for(int i = 0; i < jobsNumber; i++) {
+				for(int j = 0; j < jobsNumber; j++) {
+					if (matrix[i][j] == 1 && fileLoad) {
+						myWriter.write(
+							jobsNames.get(i)
+							+ " -> " 
+							+ jobsNames.get(j)
+							+ ";\n");
+					} else if (matrix[i][j] == 1) {
+						myWriter.write(i + " -> " + j 
+							+ ";\n");
+					}
+				}
+			}
+			myWriter.write("}");		
+			myWriter.close();
+			System.out.println("Scritto file .dot");
+		} catch (IOException e) {
+      			System.out.println("Errore di scrittura sul file.");
+      			e.printStackTrace();
+		}
+		//STAMPO I LAVORI E LA MATRICE
+		indexes = new int[jobsNumber];
 		System.out.println("Lavori assegnati:");
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < jobsNumber; i++) {
 			System.out.println(jobs.get(i));
 		}
 		System.out.println();
 		System.out.println("Matrice delle precedenze");
-		//è più leggibile stampata per righe
-		for (int i = 0; i < size; i++) {
-			System.out.println(Arrays.toString(array[i]));
+		//più leggibile stampata per righe
+		for (int i = 0; i < jobsNumber; i++) {
+			System.out.println(Arrays.toString(matrix[i]));
 		}
-		//lista che determina priorità di esecuzione di un job
-		int [] priorities = new int[size];
-		int sum = 0;
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				sum += array[i][j];
+		//lista priorità dei job
+		int [] priorities = new int[jobsNumber];
+		//CALCOLO LE PRIORITÀ DEI JOB
+		int jobPrio = 0;
+		for (int i = 0; i < jobsNumber; i++) {
+			for (int j = 0; j < jobsNumber; j++) {
+				jobPrio += matrix[i][j];
 			}
-			priorities[i] = sum;
-			sum = 0;
+			priorities[i] = jobPrio;
+			jobPrio = 0;
 		}
 		System.out.println();
 		System.out.println("Grado di priorità iniziale:");
 		System.out.println(Arrays.toString(priorities));
-		//ciclo di durata <num> jobs perché tutti devono eseguire
-		for (int i = 0; i < size; i++) {
-			//aggiungo nuovi job grado 0
-			for (int k = 0; k < size; k++) {
-				if (priorities[k] == 0
-					&& !ready.contains(jobs.get(k))) {
-					ready.add(jobs.get(k));
-				}
-			}	
+		//aggiungo nuovi job grado 0 e parte algoritmo principale
+		for (int k = 0; k < jobsNumber; k++) {
+			if (priorities[k] == 0
+				&& !readyJobs.contains(jobs.get(k))) {
+				readyJobs.add(jobs.get(k));
+			}
+		}
+		for (int i = 0; i < jobsNumber; i++) {
 			if (debug) {
 				System.out.println();
-				System.out.println("Turno: " + i);
-				System.out.println("Candidati "
-				+ "prima dell'ordinamento:");
-				System.out.println(ready);
+				System.out.println("Turno numero: " + i);
+				System.out.println("Job candidati:");
+				System.out.println(readyJobs);
 			}
-			//controllo deadlock cioè assenza di job candidati
-			if (ready.size() == 0) {
+			if (readyJobs.size() == 0) {
 				System.err.println("Errore di precedenze: "
 				+ "non ci sono job candidati (deadlock)");
 				return;
 			}
-			//riordino insieme come programmato durata/valore <
-			Collections.sort(ready);
 			if (debug) {
-				System.out.println("Candidati ordinati:");
-				System.out.println(ready);
+				System.out.println("Best job: ");
+				System.out.println(Collections.min(readyJobs));
 			}
-			//copio indice primo lavoro
-			indexes[i] = ready.get(0).getIndex();
-			//diminuire il rank a chi aspettava chi è uscito
-			for (int j = 0; j < size; j++) {
-				if( array[j][indexes[i]] == 1 ) {
+			//job migliore, lo tolgo dai ready, prio -1 lo esclude
+			indexes[i] = Collections.min(readyJobs).getIndex();
+			readyJobs.remove(Collections.min(readyJobs));
+			priorities[indexes[i]]--;
+			for (int j = 0; j < jobsNumber; j++) {
+				//diminuisco grado a chi aspettava il job
+				if(matrix[j][indexes[i]] == 1) {
 					priorities[j]--;
 				}
+				//aggiungo job grado 0, se nuovo
+				if (priorities[j] == 0
+					&& !readyJobs.contains(jobs.get(j))) {
+					readyJobs.add(jobs.get(j));
+				}
 			} 
-			priorities[indexes[i]]--;
 			if (debug) {
 				System.out.println("Priorità aggiornate:");
 				System.out
 				.println(Arrays.toString(priorities));
-			}
-			//elimino il lavoro dalla lista
-			ready.remove(0);	
-			if (debug) {
-				System.out.println("Lista aggiornata:");
-				System.out.println(ready);
-			}
+			}	
+
 		}
 		System.out.println();
 		System.out.println("Ordine di esecuzione:");
-		if (fileLoad){
-			for (int i = 0; i < size; i++) {
-				System.out.print(
-					i + ":" + reverseHash.get(indexes[i]));
-				System.out.println();
+		if (fileLoad) {
+			String[] indexesToNames = new String[jobsNumber];
+			for (int i = 0; i < jobsNumber; i++) {
+				indexesToNames[i] = jobsNames.get(indexes[i]);
 			}
+			System.out.println(Arrays.toString(indexesToNames));
 		} else {
 			System.out.println(Arrays.toString(indexes));
 		}
+		System.out.println("Tempi di attesa per job");
+		int wait = 0;
+		int[] waitingTime = new int[jobsNumber];
+		for (int i = 0; i < jobsNumber; i++) {
+			wait += jobs.get(indexes[i]).getSpan();
+			waitingTime[i] = wait;
+		}
+		System.out.println(Arrays.toString(waitingTime));
 	}
 }

@@ -1,0 +1,173 @@
+\documentclass[12pt, letterpaper]{article}
+%\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+%\usepackage[T1]{fontenc}
+%\usepackage{graphicx}
+%\graphicspath{}
+%\usepackage{listings}
+%\usepackage{svg}
+%\usepackage{pdfpages}
+\usepackage{biblatex}
+\addbibresource{sample.bib}
+
+\title{Progetto di Ricerca Operativa}
+\author{Filippo Landi}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Il mio progetto per il corso di \textit{Ricerca Operativa}.
+\end{abstract}
+
+\section{Introduzione}
+Ho scelto il progetto numero 53 \textbf{``Single machine scheduling, weighted completion times with precedence constraints''}:
+
+\medskip
+\textit{``Sono dati n jobs J=\{$j_1$..$j_n$\} di cui è noto per ciascuno il tempo di esecuzione $d^j$ e il peso $w^j$ (non correlato con $d^j$). Inoltre esistono delle regole di precedenza fra coppie di jobs descritte da un grafo aciclico. Il tempo di completamento del job j, $C^j$ è definito come l’istante di fine lavorazione del job. Ogni job, una volta iniziata la lavorazione, va portato a termine senza interruzioni. Si determini la sequenza di esecuzione dei jobs sull’unica macchina disponibile che minimizza la somma pesata dei tempi di completamento dei jobs nel rispetto delle precedenze.''}
+\medskip
+
+Ho scritto il codice per risolvere il problema in Java.
+
+\section{Come usare il codice}
+
+Per usare il programma generando dei job con precedenze (non cicliche) casuali:
+
+\begin{verbatim}
+java JobMain -j [NUMERO]
+\end{verbatim}
+
+Dove \textit{NUMERO} è il numero dei job.
+\medskip
+
+\noindent Per usare il programma caricando da file \textit{csv} i job e le precedenze (guardare \textit{jobs.csv} per un esempio):
+
+\begin{verbatim}
+java JobMain -f [FILE]
+\end{verbatim}
+
+Dove \textit{FILE} è il path a un file \textit{csv}.
+\medskip
+
+\noindent Per mostrare a terminale cosa succede ad ogni \textit{turno}\footnote{Leggere la sezione sull'implementazione del main per capire cosa intendo per \textit{turno}.} di computazione:
+
+\begin{verbatim}
+java JobMain [OPZIONI] -debug
+\end{verbatim}
+
+Di seguito spiego in maniera informale i vari ragionamenti e scelte fatte durante la progettazione: riporterò i punti più importanti, il codice sorgente stesso è ampiamente commentato e auto-esplicativo. Buona lettura.
+
+\section{Prime osservazioni}
+
+Il problema di \textit{single-machine scheduling} $1||\sum_j w_j C_j$ visto alla slide 33 di \textit{11a.EuristicheGreedy\_2021.ppt} è estremamente simile al mio: devo aggiungere le regole di precedenza tra coppie di job descritte da un \textit{grafo diretto aciclico} e ``il gioco è fatto''.
+Di seguito abbrevierò \textit{grafo diretto aciclico} in \textit{dag} (dall'inglese \textit{direct acyclic graph}).
+Nella slide viene suggerito che quel problema si risolve all'ottimo con una greedy basata sul rapporto durata su peso in ordine non decrescente.
+
+\section{Chi va piano va sano e va lontano}
+
+Il codice finale è il frutto di una serie di raffinamenti:
+
+\begin{enumerate}
+
+\item{Sono partito risolvendo il problema $1||\sum_j C_j$: il problema più semplice di \textit{single-machine scheduling} riportato nelle slide che si risolve all'ottimo con una greedy detta \textit{Shortest Processing Time}, che prende i lavori per durate non decrescenti.
+
+Questo mi ha permesso di ragionare su:
+\begin{itemize}
+\item{Una prima implementazione dei lavori in una classe Job.}
+\item{Una inizializzazione casuale dei job nel main con numero di istanze definito da argomento alla chiamata al programma.}
+\item{La realizzazione della greedy: un sorting per durata non decrescente.}
+\end{itemize}}
+
+\item{Ho adattato il codice per risolvere il $1||\sum_j w_j C_j$, che si è rivelato quasi identico al precedente: ho aggiunto il rapporto durata su valore che chiamo \textit{ratio} ai job e ho cambiato la sort considerando esso non decrescente.}
+
+\item{Ho adattato il codice per risolvere il problema delle precedenze.
+
+Qui ho ragionato su:
+	\begin{itemize}
+	\item{Come realizzare un \textit{dag} casuale.}
+	\item{Come gestire le precedenze derivate dal \textit{dag}.}
+	\end{itemize}}
+
+\item{Infine per arricchire il progetto:
+	\begin{itemize}
+	\item{Ho implementato un metodo per passare i lavori e le precedenze tramite un (unico) file \textit{.csv}.}
+	\item{Ho implementato che eseguendo il codice viene creato un file \textit{.dot} che mostra graficamente le precedenze.}
+	\end{itemize}}
+\end{enumerate}
+
+Andiamo più nel dettaglio dei vari componenti.
+
+\section{Implementazione dei lavori}
+
+I lavori sono stati realizzati nella classe \textit{Job} in \textit{Job.java} che implementa la classe \textit{Comparable}, spiego poi il perché.
+
+Ho deciso di realizzare gli attributi \textit{span} (durata) e \textit{value} (valore) come interi in quanto nelle lezioni erano tali, ovviamente si può cambiare avendo premura di modificare il necessario: ricordo che Java è fortemente tipato. Il \textit{ratio} definito come $span/value$, necessario per il secondo problema, è necessariamente di tipo \textit{Double} per mantenere i valori decimali.
+Ho aggiunto un indice di tipo intero per identificare i job.
+
+La classe \textit{Comparable} permette di definire il metodo \textit{compareTo} che definisce un metodo per confrontare una collezione di oggetti, infatti l'insieme dei Job sarà realizzato come collezione di oggetti (lista).
+Per esempio l'istruzione:\begin{verbatim} Collections.sort(LISTA); \end{verbatim} riordina i \textit{Job} secondo la politica di \textit{compareTo}, si può usare per risolvere i problemi senza precedenze.
+Nel codice finale userò invece l'istruzione:\begin{verbatim} Collections.min(LISTA); \end{verbatim} per prendere direttamente il \textit{Job} col \textit{ratio} minimo.
+
+\section{Realizzare un dag}
+ 
+Da una rapida ricerca online ho trovato che un grafo diretto è aciclico se esiste un ordinamento dei vertici che rende la sua matrice di adiacenza triangolare inferiore, la diagonale principale è nulla per non avere cicli sui vertici stessi (self-loops).\cite{dag-matrix}
+
+L'idea è che i nodi hanno un grado e solo nodi di grado inferiore si possono connettere a nodi di grado superiore: creando un ordine si evitano cicli.
+
+\subsection{La matrice triangolare inferiore casuale}
+
+La matrice essendo triangolare è quadrata e avrà cardinalità dettata dal numero dei job.
+
+Si può leggere questa matrice per righe dicendo:
+\medskip
+
+\textbf{``Il job associato alla riga i aspetta il job associato alla riga j?''}
+\begin{itemize}
+\item{Se c'è un 1 allora sì,}
+\item{se c'è un 0 allora no.}
+\end{itemize}
+
+Ho implementato nella classe RandomDagGenerator un generatore per una matrice triangolare inferiore casuale: riga per riga ``lancia di una moneta'' per assegnare 0 o 1 (probabilità a 0.5 ma può essere cambiata), quando incontra il primo elemento della diagonale principale assegna 0 fino alla fine della riga (si potrebbe dire che fa un ``zero-fill'' da lì in poi).
+
+\section{Spiegazione di JobMain}
+Il main si trova in JobMain e fa molte cose.
+Spiego cosa fa per blocchi, si possono riconoscere guardando i commenti nel codice:
+\begin{enumerate}
+\item{Definizione di variabili: molte variabili sono dichiarate qui, altre dentro i blocchi che le usano esclusivamente: da quel che ho capito non è \textit{best practice} fare così, sarebbe meglio sapere dall'inizio tutte le variabili usate nel programma, ma mi pareva troppo confusionario poi.}
+\item{Gestione argomenti: qui controllo gli argomenti e setto alcuni boolean per eseguire le azioni richieste.}
+\item{Istanziazione random: se è usato l'argomento -j creo i job e le precedenze in maniera random.}
+\item{Istanziazione da file: se è usato l'argomento -f creo i job e le precedenze caricando da file.}
+\item{Creazione del grafico \textit{.dot}: creo il grafico \textit{.dot} con la sua sintassi.}
+\item{Stampo i lavori e la matrice.}
+\item{Calcolo le priorità dei job: ciclo e conto il numero di job che ogni job aspetta, questo ne determina la \textit{priorità} o \textit{grado}:
+	\begin{itemize}
+	\item{I lavori con grado 0 sono quelli che non aspettano nessuno, quindi possono essere eseguiti.}
+	\item{I lavori con grado maggiore di zero aspettano qualcuno, quindi non possono eseguire.}
+	\item{I lavori con grado -1 sono i lavori già eseguiti, così da non riprenderli in considerazione.}
+	\end{itemize}}
+\item{Creo la lista \textit{ready} di lavori a grado 0.}
+\item{Algoritmo principale: cicla per il numero di lavori (li deve eseguire tutti), questi sono i \textit{turni}:
+\begin{enumerate}
+\item{Sceglie il job col ratio minore.}
+\item{Aggiorna la lista dell'\textit{ordine di esecuzione migliore} aggiungendo l'indice del job.}
+\item{Rimuove il job scelto dalla lista \textit{ready}.}
+\item{Aggiorna le priorità: un job uscendo diminuisce il grado dei job che lo aspettavano.}
+\item{Aggiunge i nuovi lavori grado 0.} 
+\item{Ritorna al primo step (fino a fine ciclo).}
+\end{enumerate}}
+\item{Restituisco l'ordine di esecuzione migliore dei job.}
+\item{Stampo i tempi di completamento dei job.}
+\end{enumerate}
+
+\section{Commenti ulteriori}
+
+\subsection{Caricamento da file}
+Come detto ho aggiunto la capacità di caricare da file \textit{csv} dei lavori, basta scrivere i vari campi separati da virgole: il nome, la durata, il valore e le varie precedenze.
+Per le precedenze bisogna avere premura che sia un grafo aciclico, se no il codice arriva ad un punto che non trova nessun job candidato e termina l'esecuzione.
+\subsection{Il grafico .dot}
+Per vedere il grafico bisogna avere qualche programma capace di interpretare il linguaggio dot: io ho uso \textit{XDot}, ma ci sono anche utility online.
+Il grafico, oltre ad essere carino, può aiutare ad individuare cicli in caso le precedenze non rispettino i vincoli propri di un \textit{dag}.
+
+\printbibliography
+
+\end{document}
+
