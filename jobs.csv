@@ -1,4 +1,4 @@
-lavoro,durata,valore,precedenza1,precedenza2,etc.
+lavoro,durata,valore,precedenze
 marco,30,2,luca,filippo
 luca,10,50,filippo
 filippo,20,30
