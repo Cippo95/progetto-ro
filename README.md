@@ -17,6 +17,6 @@ Dove FILE è il path a un file csv.
 Per mostrare a terminale cosa succede ad ogni turno di computazione:    
 `java JobMain [OPZIONI] -debug`  
 
-###Documentazione
+### Documentazione
 
 Per maggiori informazioni sull'implementazione leggere docs/documentazione.pdf
