@@ -95,9 +95,13 @@ public class JobMain {
                   			Integer.parseInt(tokens[1]),
                   			Integer.parseInt(tokens[2])
 					);
-				//leggo le precedenze
-				for (int j = 3; j < tokens.length; j++) {
-					jobPrec.add(tokens[j]);
+				//leggo le precedenze, se ci sono
+				if(tokens.length == 4){
+					String prec = tokens[3];
+					String[] tok = prec.split(";");
+					for(int j = 0; j < tok.length; j++) {
+						jobPrec.add(tok[j]);
+					}
 				}
 				precList.add(jobPrec);
 				jobs.add(jobItem);
