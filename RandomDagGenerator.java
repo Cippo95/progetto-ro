@@ -1,29 +1,30 @@
 import java.util.*;
-public class RandomDagGenerator{
-	private boolean set_zero=false;
+public class RandomDagGenerator {
 	private int size;
-	public RandomDagGenerator(int size){ 
+	public RandomDagGenerator(int size) { 
 		this.size = size; 
 	}
-	private int randomizer(){
+	private int randomizer() {
 		Random random = new Random();
-		if(random.nextFloat()>0.5) return 1; else return 0;
+		if(random.nextFloat() > 0.5) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
-	public int[][] getRandomDag(){ 
+	public int[][] getRandomDag() { 
 		int[][] matrix = new int[size][size];
-		for(int i=0; i<size; i++){
-			for(int j=0; j<size; j++){
-				if(j==i){
-					set_zero=true;
-				}
-				if(!set_zero){
-					matrix[i][j]=randomizer();
-				}
-				else{
-					matrix[i][j]=0;
+		//ciclo su tutta la matrice con due loop (riga i e colonna j)
+		for(int i = 0; i < size; i++) {
+			for(int j = 0; j < size; j++){
+				//da diagonale in poi solo zeri
+				if(j >= i){
+					matrix[i][j] = 0;
+				} else {
+					//parte triangolare sotto diagonale
+					matrix[i][j] = randomizer();
 				}
 			}
-			set_zero=false;
 		}
 		return matrix;
 	}
