@@ -1,6 +1,7 @@
 digraph prioGraph {
 marco -> luca;
 marco -> filippo;
+marco -> giacomo;
 luca -> filippo;
 carlo -> giacomo;
 giacomo -> filippo;

@@ -1,5 +1,5 @@
 lavoro,durata,valore,precedenze
-marco,30,2,luca;filippo
+marco,30,2,luca;filippo;giacomo
 luca,10,50,filippo
 filippo,20,30,
 carlo,24,65,giacomo
