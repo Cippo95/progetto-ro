@@ -59,8 +59,8 @@ public class JobMain {
 			for (int j = 0; j < jobsNumber; j++) {
 				Job jobItem = new Job(
 				j,				//indice
-				random.nextInt(100), 		//durata
-				random.nextInt(100) 		//valore
+				random.nextInt(99)+1, 		//durata
+				random.nextInt(99)+1 		//valore
 				);
 				jobs.add(jobItem);
 			}
