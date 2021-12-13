@@ -15,7 +15,7 @@ Per usare il programma caricando da file csv i job e le precedenze (guardare job
 Dove FILE è il path a un file csv.  
 
 Per mostrare a terminale cosa succede ad ogni turno di computazione:    
-`java JobMain [OPZIONI] -debug`  
+`java JobMain [OPZIONE -j o -f] -debug`  
 
 ### Documentazione
 
