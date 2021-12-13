@@ -178,6 +178,9 @@ Come accennato bisogna avere premura che le precedenze siano un grafo aciclico, 
 \subsection{Il grafico .dot}
 Per vedere il grafico bisogna avere qualche programma capace di interpretare il linguaggio dot: io uso \textit{XDot}, ma ci sono anche utility online.
 Il grafico, oltre ad essere carino, può aiutare ad individuare cicli in caso le precedenze non rispettino i vincoli propri di un \textit{dag}.
+\subsection{Il modello matematico}
+Non ci ho pensato molto quindi spero che il mio ragionamento sia corretto: direi che si può creare prendendo il modello del problema $1||\sum_j w_j C_j$ visto alla slide 33 di \textit{11a.EuristicheGreedy\_2021.ppt} e aggiungendo dei vincoli come disequazioni sui tempi di esecuzione dei job che ne limitino l'esecuzione dopo i job a cui devono dare la precedenza, stile: $t_{j_1} \geq t_{j_2} + d_{j_2} \forall j_1,j_2 \in J$ (come viene fatto coi \textit{task} alla slide n.90 di \textit{09.Flussi1\_2021.ppt}). Credo quindi serva anche un lavoro finto $j_0$ che esegua al tempo 0, di durata 0 e quindi \textit{ratio} 0. 
+
 
 \printbibliography
 
