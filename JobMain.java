@@ -52,7 +52,6 @@ public class JobMain {
 				return;
 			}
 		}
-		System.out.println();
 		//ISTANZIAZIONE RANDOM
 		if (randomGen) {
 			Random random = new Random();
@@ -129,6 +128,7 @@ public class JobMain {
 			System.err.println("Nessun lavoro!");
 			return;
 		}
+		System.out.println();
 		//CREAZIONE DEL GRAFICO .DOT
 		try {
 			FileWriter myWriter = new FileWriter("prioGraph.dot");
@@ -149,7 +149,6 @@ public class JobMain {
 			}
 			myWriter.write("}");		
 			myWriter.close();
-			System.out.println();
 			System.out.println("Scritto file .dot");
 		} catch (IOException e) {
       			System.out.println("Errore di scrittura sul file.");
