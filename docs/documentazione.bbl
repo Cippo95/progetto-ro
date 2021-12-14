@@ -29,6 +29,38 @@
       \verb https://mathematica.stackexchange.com/a/613
       \endverb
     \endentry
+    \entry{np-hard}{online}{}
+      \name{author}{2}{}{%
+        {{hash=1e686847fce3d3265a221f3da4931252}{%
+           family={Lenstra},
+           familyi={L\bibinitperiod},
+           given={J.\bibnamedelimi K.},
+           giveni={J\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=7800070c147b85d4858be9601e32467f}{%
+           family={Rinnooy\bibnamedelima Kan},
+           familyi={R\bibinitperiod\bibinitdelim K\bibinitperiod},
+           given={A.\bibnamedelimi H.\bibnamedelimi G.},
+           giveni={A\bibinitperiod\bibinitdelim H\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+      }
+      \strng{namehash}{7d819678ab87438e694fc4b8098ecbd3}
+      \strng{fullhash}{7d819678ab87438e694fc4b8098ecbd3}
+      \strng{bibnamehash}{7d819678ab87438e694fc4b8098ecbd3}
+      \strng{authorbibnamehash}{7d819678ab87438e694fc4b8098ecbd3}
+      \strng{authornamehash}{7d819678ab87438e694fc4b8098ecbd3}
+      \strng{authorfullhash}{7d819678ab87438e694fc4b8098ecbd3}
+      \field{sortinit}{L}
+      \field{sortinithash}{dad3efd0836470093a7b4a7bb756eb8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{COMPLEXITY RESULTS FOR SCHEDULING CHAINS ON A SINGLE MACHINE}
+      \field{year}{1979}
+      \verb{urlraw}
+      \verb https://econpapers.repec.org/paper/agseureia/272176.htm
+      \endverb
+      \verb{url}
+      \verb https://econpapers.repec.org/paper/agseureia/272176.htm
+      \endverb
+    \endentry
   \enddatalist
 \endrefsection
 \endinput

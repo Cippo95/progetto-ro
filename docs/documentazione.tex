@@ -26,7 +26,7 @@ Ho scelto il progetto numero 53 \textbf{``Single machine scheduling, weighted co
 \textit{``Sono dati n jobs J=\{$j_1$..$j_n$\} di cui è noto per ciascuno il tempo di esecuzione $d^j$ e il peso $w^j$ (non correlato con $d^j$). Inoltre esistono delle regole di precedenza fra coppie di jobs descritte da un grafo aciclico. Il tempo di completamento del job j, $C^j$ è definito come l’istante di fine lavorazione del job. Ogni job, una volta iniziata la lavorazione, va portato a termine senza interruzioni. Si determini la sequenza di esecuzione dei jobs sull’unica macchina disponibile che minimizza la somma pesata dei tempi di completamento dei jobs nel rispetto delle precedenze.''}
 \medskip
 
-Ho scritto il codice per risolvere il problema in Java.
+Ho scritto il codice per fornire una soluzione ammissibile al problema in Java.
 
 \section{Come usare il codice}
 
@@ -170,7 +170,7 @@ Spiego cosa fa per blocchi, si possono riconoscere guardando i commenti nel codi
 \item{Stampo i tempi di completamento dei job.}
 \end{enumerate}
 
-\section{Commenti ulteriori}
+\section{Commenti finali}
 
 \subsection{Caricamento da file}
 Come detto ho aggiunto la capacità di caricare da file \textit{csv} dei lavori, basta scrivere i vari campi separati da virgole: il nome, la durata, il valore e le varie precedenze (queste separate da ``;'').
@@ -179,8 +179,11 @@ Come accennato bisogna avere premura che le precedenze siano un grafo aciclico, 
 Per vedere il grafico bisogna avere qualche programma capace di interpretare il linguaggio dot: io uso \textit{XDot}, ma ci sono anche utility online.
 Il grafico, oltre ad essere carino, può aiutare ad individuare cicli in caso le precedenze non rispettino i vincoli propri di un \textit{dag}.
 \subsection{Il modello matematico}
-Non ci ho pensato molto quindi spero che il mio ragionamento sia corretto: direi che si può creare prendendo il modello del problema $1||\sum_j w_j C_j$ visto alla slide 33 di \textit{11a.EuristicheGreedy\_2021.ppt} e aggiungendo dei vincoli come disequazioni sui tempi di esecuzione dei job che ne limitino l'esecuzione dopo i job a cui devono dare la precedenza, stile: $t_{j_1} \geq t_{j_2} + d_{j_2} \forall j_1,j_2 \in J$ (come viene fatto coi \textit{task} alla slide n.90 di \textit{09.Flussi1\_2021.ppt}). Credo quindi serva anche un lavoro finto $j_0$ che esegua al tempo 0, di durata 0 e quindi \textit{ratio} 0. 
-
+Non ci ho pensato molto quindi spero che il mio ragionamento sia corretto: direi che si può creare prendendo il modello del problema $1||\sum_j w_j C_j$ visto alla slide 33 di \textit{11a.EuristicheGreedy\_2021.ppt} e aggiungendo dei vincoli come disequazioni sui tempi di esecuzione dei job che ne limitino l'esecuzione dopo i job a cui devono dare la precedenza, stile: $t_{j_1} \geq t_{j_2} + d_{j_2} \forall j_1,j_2 \in J$ (come viene fatto coi \textit{task} alla slide n.90 di \textit{09.Flussi1\_2021.ppt}). Credo quindi serva anche un lavoro finto $j_0$ che esegua al tempo 0, di durata 0 e quindi \textit{ratio} 0.
+\subsection{Ottimalità della soluzione (?)}
+La soluzione fornita dal mio programma è solo una soluzione ammissibile, si può vedere facilmente che non sarebbe ottima in caso un job \textit{ready} abbia \textit{ratio} maggiore di un altro \textit{ready} e da lui dipendono altri job a \textit{ratio} molto basso (se è così il valore $>>$ durata e quindi farli prima minimizza la somma pesata) che quindi non partono quando invece sarebbe stato conveniente far partire lui anche se peggiore e aggiungere gli altri job\ldots se non avessero altre dipendenze! il che fa capire che il problema è difficile.
+Cercando online infatti il problema è stato dimostrato \textit{NP-Hard}\cite{np-hard}, dovrei quindi immaginare un procedimento un po' più complesso della mia semplice greedy costruttiva per avere una soluzione migliore.
+Probabilmente la strada migliore sarebbe quella di affidarsi a qualche tool di ricerca operativa, sto dando un'occhiata agli ``OR-Tools'' della Google, però probabilmente non farò in tempo a riadattare il mio progetto con questi tool.
 
 \printbibliography
 
