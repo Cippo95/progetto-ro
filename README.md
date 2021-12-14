@@ -2,7 +2,7 @@
 
 Devo risolvere il progetto n.53 fatto per una persona: **Single machine scheduling, weighted completion times with precedence constraints**.  
 
-Ho scritto il codice per risolvere il problema in Java.  
+Ho scritto il codice per fornire una soluzione ammissibile in Java.  
 
 ### Usare il programma
 
