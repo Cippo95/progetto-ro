@@ -34,12 +34,12 @@ public class JobMain {
 		for (int i = 0; i < args.length; i++) {
 			String argument = args[i];
 			if (argument.equals("-j") && !fileLoad) {
-				System.out.println("Generazione random!");	
+				System.out.println("Generazione random!");
 				randomGen = true;
 				jobsNumber = Integer.parseInt(args[i+1]);
 				i++;
 			} else if (argument.equals("-f") && !randomGen) {
-				System.out.println("Caricamento da file!");	
+				System.out.println("Caricamento da file!");
 				fileLoad = true;
 				filePath = args[i+1];
 				i++;
@@ -52,6 +52,7 @@ public class JobMain {
 				return;
 			}
 		}
+		System.out.println();
 		//ISTANZIAZIONE RANDOM
 		if (randomGen) {
 			Random random = new Random();
@@ -148,11 +149,13 @@ public class JobMain {
 			}
 			myWriter.write("}");		
 			myWriter.close();
+			System.out.println();
 			System.out.println("Scritto file .dot");
 		} catch (IOException e) {
       			System.out.println("Errore di scrittura sul file.");
       			e.printStackTrace();
 		}
+		System.out.println();
 		//STAMPO I LAVORI E LA MATRICE
 		indexes = new int[jobsNumber];
 		System.out.println("Lavori assegnati:");
@@ -235,13 +238,18 @@ public class JobMain {
 		} else {
 			System.out.println(Arrays.toString(indexes));
 		}
+		System.out.println();
 		System.out.println("Tempi di attesa per job");
 		int wait = 0;
+		int tw = 0;
 		int[] waitingTime = new int[jobsNumber];
 		for (int i = 0; i < jobsNumber; i++) {
 			wait += jobs.get(indexes[i]).getSpan();
 			waitingTime[i] = wait;
+			tw += wait * jobs.get(indexes[i]).getValue();
 		}
 		System.out.println(Arrays.toString(waitingTime));
+		System.out.println();
+		System.out.println("Somma pesata tempi completamento jobs: " + tw);
 	}
 }
