@@ -1,0 +1,4 @@
+lavoro,durata,valore,precedenze
+marco,10,10,
+luca,20,10,
+filippo,1,1000,luca
