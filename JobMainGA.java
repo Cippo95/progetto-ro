@@ -24,14 +24,10 @@ public class JobMainGA {
 		int [][] matrix = null;
 		//ordine esecuzione lavori
 		int[] indexes;
-		//lavori grado 0 nel turno
-		List<Job> readyJobs = new ArrayList<Job>();
 		//path del file
 		String filePath = "";
-		Random random = new Random();
 		//lista dei lavori da file, serve per ricavare l'indice
 		List<String> jobsNames = new ArrayList<String>();
-		List<int[]> population = new ArrayList<int[]>();
 		//GESTIONE ARGOMENTI
 		for (int i = 0; i < args.length; i++) {
 			String argument = args[i];
@@ -56,7 +52,7 @@ public class JobMainGA {
 		}
 		//ISTANZIAZIONE RANDOM
 		if (randomGen) {
-			//Random random = new Random();
+			Random random = new Random();
 			//job random
 			for (int j = 0; j < jobsNumber; j++) {
 				Job jobItem = new Job(
@@ -190,27 +186,31 @@ public class JobMainGA {
 		List<int[]> population = new ArrayList<int[]>();
 		int[] indexes = Greedy(jobs, matrix, debug);
 		int[] best = indexes.clone();
+		int equalBest = 0;
 		population.add(indexes);
 		//Print(jobs, indexes);
 		int jobsNumber = jobs.size();
 		//lista priorità
 		int bestFit = Fitness(jobs, indexes);
+		int oldBestFit = Fitness(jobs, indexes);
 		int[] priorities = Priorities(jobsNumber, matrix);
 		Random random = new Random();
 		//popolo di 200, 199 buone enumerazioni, come paper
-		for (int i = 0; i < 199-1; i++) {
+		for (int i = 0; i < 200-1; i++) {
 			indexes = GoodEnum(jobs, matrix, debug);
 			population.add(indexes);
+			//System.out.println(Arrays.toString(indexes));
 		}
-		int[] child = new int[jobsNumber];
 		//100*n generazioni come paper
 		for(int gen = 0; gen < 100*jobsNumber; gen++) {
+			int[] child = new int[jobsNumber];
+			//System.out.println(population.size());
 			int first = random.nextInt(population.size());
 			//System.out.println("primo genitore" + Arrays.toString(population.get(first)));
 			int second = random.nextInt(population.size());
 			//System.out.println("secondo genitore" + Arrays.toString(population.get(second)));
-			//punto di crossover
-			int point = random.nextInt(jobsNumber);
+			//punto di crossover, da almeno il primo o fino a penultimo job se no non lo farebbe
+			int point = random.nextInt(jobsNumber-1)+1;
 			//System.out.println(point);
 			//job da evitare, serve per ordine relativo
 			List<Integer> avoidedJobs = new ArrayList<Integer>();
@@ -219,11 +219,12 @@ public class JobMainGA {
 				avoidedJobs.add(child[i]);
 			}
 			//System.out.println("evita" + avoidedJobs);
-			for(int i = 0; i < jobsNumber; i++) {
-				int candidate = population.get(second)[i];
-				//System.out.println("candidato" + candidate);
+			for(int k = 0; k < jobsNumber; k++) {
+				int candidate = population.get(second)[k];
+				//System.out.println("candidato " + candidate);
 				if(!avoidedJobs.contains(candidate)) {
 					child[point] = candidate;
+					//System.out.println(Arrays.toString(child));
 					point++;
 				}
 			}
@@ -241,7 +242,9 @@ public class JobMainGA {
 				//se migliore di tutti
 				if(childFit < bestFit) {
 					bestFit = childFit;
+					oldBestFit = childFit;
 					best = child.clone();
+					equalBest = 0;
 				}
 				int worstFit = Fitness(jobs, population.get(0));
 				int worst = 0;
@@ -254,6 +257,14 @@ public class JobMainGA {
 					population.remove(worst);
 					population.add(child);
 				}
+			}
+			if(bestFit == oldBestFit) { 
+				equalBest++;
+			}
+			if(equalBest == 10*jobsNumber) {
+				System.out.println();
+				System.out.println("Early stop: >10*n senza miglioramento");
+				return best;
 			}
 		}		
 		return best;	
@@ -489,8 +500,7 @@ public class JobMainGA {
 				System.out.println("Priorità aggiornate:");
 				System.out
 				.println(Arrays.toString(priorities));
-			}	
-
+			}
 		}
 		return indexes;
 	}

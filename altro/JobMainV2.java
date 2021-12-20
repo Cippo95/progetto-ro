@@ -3,8 +3,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 /**
-* JobMain esegue molte cose, abbastanza legate, ho trovato un po' difficile 
-spezzare le cose per cui rimane "monolitico".
+* JobMainV2 permette di fare scelte random... deprecato da quando esiste JobMainGA
 @author Filippo Landi
 */
 public class JobMainV2 {
