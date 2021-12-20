@@ -8,6 +8,7 @@
 %\usepackage{svg}
 %\usepackage{pdfpages}
 \usepackage{hyperref}
+\usepackage{ulem}
 \usepackage{biblatex}
 \addbibresource{sample.bib}
 
@@ -216,30 +217,30 @@ Il problema mostrato nel paper è estremamente simile al mio e mi ha ispirato a 
 L'algoritmo genetico che ho implementato si ispira a quanto fatto nel paper, consiglio di leggere il paper velocemente per cogliere le differenze: 
 
 \begin{enumerate}
-\item{Crea la popolazione iniziale con l'individuo generato dalla greedy e il resto random (buona enumerazione).}
+\item{Crea la popolazione iniziale con l'individuo generato dalla greedy e il resto random (buona enumerazione). Genero 200 individui come nel paper.}
 \item{Seleziona due genitori con \textit{binary tournament scheme}: se ho capito bene si scelgono a caso due genitori (e l'ho implementato così).}
 \item{Genera un figlio applicando il crossover:}
 \begin{itemize}
 \item{Il crossover \textit{ad un punto}: eredito la prima parte dal padre e il resto dei lavori per \textit{posizione relativa} (come fatto a lezione nella GA per il TSP).}
 \item{Dopo il crossover controllo l'ammissibilità.}
-\item{Nel paper viene anche fatta una mutazione, io la salto (scelta sicuramente opinabile).}
+\item{Nel paper viene anche fatta una mutazione, io la salto, scelta sicuramente opinabile. Questo perché mi immagino come mutazione uno swap, ma ne faccio a sufficienza dopo nella ricerca locale, non vedo come sia importante farne uno qui.}
 \end{itemize}
 \item{Se il figlio è ammissibile valuta la fitness del figlio, in caso contrario riparto dallo step 2.}
-\item{Applica una ricerca locale sul figlio: la faccio esaustiva di tipo swap e la faccio più volte seguendo una filosofia simile alla \textit{Variable Depth Search}\ldots questo step è sicuramente estremamente pesante (a seconda dei parametri messi).}
+\item{Applica una ricerca locale sul figlio: la faccio esaustiva di tipo swap e la faccio più volte (n volte) seguendo una filosofia simile alla \textit{Variable Depth Search}\ldots questo step è sicuramente pesante (a seconda dei parametri messi).}
 \item{Sostituisce il peggiore membro della popolazione col figlio (se è effettivamente peggiore del figlio).}
 \item{In caso il figlio sia il migliore della popolazione aggiorna la migliore soluzione.}
-\item{Se uno dei criteri di stop è raggiunto ritorna la miglior soluzione altrimenti ritorna allo step 2: i criteri di stop sono un tot di generazioni a priori (nel paper sono 100*numero di lavori) o tot generazioni senza miglioramento (nel paper 10*numeri di job), quest'ultimo lo devo ancora implementare.}
+\item{Se uno dei criteri di stop è raggiunto ritorna la miglior soluzione altrimenti ritorna allo step 2: i criteri di stop sono un tot di generazioni a priori (come nel paper 100*numero di lavori) o tot generazioni senza miglioramento (come nel paper 10*numeri di job).}
 \end{enumerate}
 
 Sto ottenendo buoni risultati dove la soluzione greedy alle volte viene migliorata anche di molto.
 
-Devo però fare refactoring del codice, scegliere bene alcuni parametri e controllare che tutto funzioni bene.
+\sout{Devo però fare refactoring del codice, scegliere bene alcuni parametri e controllare che tutto funzioni bene.}
 
 I tempi di calcolo per l'algoritmo genetico sono estremamente più lunghi dell'algoritmo greedy a seconda dell'istanza (e dei parametri da me impostati).
 
 Ho dovuto ristrutturare parecchio il codice, infatti questa nuova versione si troverà in \textit{JobMainGA.java}.
 
-Aggiornerò i file di progetto (e probabilmente anche questo documento) su GitHub una volta finito\ldots direi in un paio di giorni.
+\sout{Aggiornerò i file di progetto (e probabilmente anche questo documento) su GitHub una volta finito\ldots direi in un paio di giorni.}
 
 \section{Dove trovare i paper}
 Spesso i paper si trovano su siti che richiedono di creare un account o pagare\ldots cercando bene ci sono siti che li rendono pubblicamente consultabili e scaricabili.
