@@ -8,7 +8,6 @@
 %\usepackage{svg}
 %\usepackage{pdfpages}
 \usepackage{hyperref}
-\usepackage{ulem}
 \usepackage{biblatex}
 \addbibresource{sample.bib}
 
@@ -232,15 +231,11 @@ L'algoritmo genetico che ho implementato si ispira a quanto fatto nel paper, con
 \item{Se uno dei criteri di stop è raggiunto ritorna la miglior soluzione altrimenti ritorna allo step 2: i criteri di stop sono un tot di generazioni a priori (come nel paper 100*numero di lavori) o tot generazioni senza miglioramento (come nel paper 10*numeri di job).}
 \end{enumerate}
 
-Sto ottenendo buoni risultati dove la soluzione greedy alle volte viene migliorata anche di molto.
+L'algoritmo genetico migliora abbastanza spesso il risultato della greedy.
 
-\sout{Devo però fare refactoring del codice, scegliere bene alcuni parametri e controllare che tutto funzioni bene.}
-
-I tempi di calcolo per l'algoritmo genetico sono estremamente più lunghi dell'algoritmo greedy a seconda dell'istanza (e dei parametri da me impostati).
+I tempi di calcolo per l'algoritmo genetico sono estremamente più lunghi dell'algoritmo greedy a seconda dell'istanza e sicuramente anche i miei parametri potrebbe non essere i più azzeccati.
 
 Ho dovuto ristrutturare parecchio il codice, infatti questa nuova versione si troverà in \textit{JobMainGA.java}.
-
-\sout{Aggiornerò i file di progetto (e probabilmente anche questo documento) su GitHub una volta finito\ldots direi in un paio di giorni.}
 
 \section{Dove trovare i paper}
 Spesso i paper si trovano su siti che richiedono di creare un account o pagare\ldots cercando bene ci sono siti che li rendono pubblicamente consultabili e scaricabili.
