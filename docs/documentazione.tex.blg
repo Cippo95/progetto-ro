@@ -1,5 +1,5 @@
 [0] Config.pm:304> INFO - This is Biber 2.14 (beta)
 [0] Config.pm:307> INFO - Logfile is 'documentazione.tex.blg'
-[55] biber:322> INFO - === mar dic 14, 2021, 12:23:21
-[124] Utils.pm:309> ERROR - Cannot find 'documentazione.tex.bcf'!
-[124] Biber.pm:132> INFO - ERRORS: 1
+[55] biber:322> INFO - === lun dic 20, 2021, 13:50:00
+[125] Utils.pm:309> ERROR - Cannot find 'documentazione.tex.bcf'!
+[125] Biber.pm:132> INFO - ERRORS: 1

@@ -250,5 +250,77 @@ public class JobMain {
 		System.out.println(Arrays.toString(waitingTime));
 		System.out.println();
 		System.out.println("Somma pesata tempi completamento jobs: " + tw);
+		//partire da qui per fare una local search
+		//non è detto che la soluzione fornita ad ogni passo sia ammissibile
+		//potrei dare un valore pessimo alla soluzione ammissibile
+		//potrei controllare l'ammissibilità
+		//andiamo a vedere un test di ammissibilità.
+		
+
+		//CALCOLO LE PRIORITÀ DEI JOB
+		jobPrio = 0;
+		for (int i = 0; i < jobsNumber; i++) {
+			for (int j = 0; j < jobsNumber; j++) {
+				jobPrio += matrix[i][j];
+			}
+			priorities[i] = jobPrio;
+			jobPrio = 0;
+		}
+		//controllo buona enumerazione
+		for (int i = 0; i < jobsNumber; i++) {
+			//per ogni turno controllo che sia stato scelto un job grado 0
+			if (priorities[indexes[i]] == 0) {
+				for (int j = 0; j < jobsNumber; j++) {
+					//diminuisco grado a chi aspettava il job
+					if(matrix[j][indexes[i]] == 1) {
+						priorities[j]--;
+					}
+				}
+			} else {
+				System.out.println("Soluzione non ammissibile");
+			}
+		}
+		//ora devo immaginare la mossa...o anche la metaeuristica...
+		//scambio di nodi...
+		int indexesItem;
+		int indexesc[] = indexes;
+		boolean ammissibile = true;
+		int s = 0;
+		
+		//provo intorno per tutte le combinazioni
+		for (int i = 0; i < jobsNumber-1; i++) {
+		
+			//intorno a questo giro
+			//copia primo valore
+			indexesItem = indexes[i];
+			//primo indice diventa il secondo
+			indexesc[i] = indexes[i+1];
+			//secondo indice prende il primo
+			indexesc[i+1] = indexesItem;
+			
+			//controllo buona enumerazione
+			while (ammissibile && s < jobsNumber) { 
+					//per ogni turno controllo che sia stato scelto un job grado 0
+					if (priorities[indexesc[s]] == 0) {
+						for (int j = 0; j < jobsNumber; j++) {
+							//diminuisco grado a chi aspettava il job
+							if(matrix[j][indexes[s]] == 1) {
+								priorities[j]--;
+							}
+						}
+					} else {
+						System.out.println("Soluzione non ammissibile" + Arrays.toString(indexes));
+						ammissibile = false;
+					}
+					s++;
+			}
+			//se ammissibile
+			if (ammissibile) { 
+				System.out.println("Soluzione ammissibile: " + Arrays.toString(indexes));
+			}
+			ammissibile = true;
+			indexesc = indexes;
+		}
+
 	}
 }

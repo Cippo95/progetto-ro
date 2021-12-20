@@ -1,0 +1,5 @@
+[0] Config.pm:304> INFO - This is Biber 2.14 (beta)
+[0] Config.pm:307> INFO - Logfile is 'documentazione.aux.blg'
+[55] biber:322> INFO - === lun dic 20, 2021, 13:51:39
+[125] Utils.pm:309> ERROR - Cannot find 'documentazione.aux.bcf'!
+[125] Biber.pm:132> INFO - ERRORS: 1

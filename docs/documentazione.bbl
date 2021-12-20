@@ -29,7 +29,46 @@
       \verb https://mathematica.stackexchange.com/a/613
       \endverb
     \endentry
-    \entry{np-hard}{online}{}
+    \entry{Baev}{article}{}
+      \name{author}{3}{}{%
+        {{hash=27e0252577c2946e7b7525b066bc44ac}{%
+           family={Baev},
+           familyi={B\bibinitperiod},
+           given={Ivan},
+           giveni={I\bibinitperiod}}}%
+        {{hash=4827260f701e22eec34d8b23438c7f3d}{%
+           family={Meleis},
+           familyi={M\bibinitperiod},
+           given={Waleed},
+           giveni={W\bibinitperiod}}}%
+        {{hash=a1a06b28331a89169240573abf2874fd}{%
+           family={Eichenberger},
+           familyi={E\bibinitperiod},
+           given={Alexandre},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{efa46a0a96f833d15f43b685e5868065}
+      \strng{fullhash}{efa46a0a96f833d15f43b685e5868065}
+      \strng{bibnamehash}{efa46a0a96f833d15f43b685e5868065}
+      \strng{authorbibnamehash}{efa46a0a96f833d15f43b685e5868065}
+      \strng{authornamehash}{efa46a0a96f833d15f43b685e5868065}
+      \strng{authorfullhash}{efa46a0a96f833d15f43b685e5868065}
+      \field{sortinit}{B}
+      \field{sortinithash}{8de16967003c7207dae369d874f1456e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Algorithmica}
+      \field{month}{05}
+      \field{title}{An Experimental Study of Algorithms for Weighted Completion Time Scheduling}
+      \field{volume}{33}
+      \field{year}{2002}
+      \field{pages}{34\bibrangedash 51}
+      \range{pages}{18}
+      \verb{doi}
+      \verb 10.1007/s00453-001-0103-x
+      \endverb
+    \endentry
+    \entry{Lenstra}{online}{}
       \name{author}{2}{}{%
         {{hash=1e686847fce3d3265a221f3da4931252}{%
            family={Lenstra},
@@ -42,6 +81,9 @@
            given={A.\bibnamedelimi H.\bibnamedelimi G.},
            giveni={A\bibinitperiod\bibinitdelim H\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
       }
+      \list{institution}{1}{%
+        {Erasmus University Rotterdam}%
+      }
       \strng{namehash}{7d819678ab87438e694fc4b8098ecbd3}
       \strng{fullhash}{7d819678ab87438e694fc4b8098ecbd3}
       \strng{bibnamehash}{7d819678ab87438e694fc4b8098ecbd3}
@@ -52,13 +94,55 @@
       \field{sortinithash}{dad3efd0836470093a7b4a7bb756eb8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
+      \field{number}{272176}
       \field{title}{COMPLEXITY RESULTS FOR SCHEDULING CHAINS ON A SINGLE MACHINE}
+      \field{type}{Econometric Institute Archives}
       \field{year}{1979}
       \verb{urlraw}
-      \verb https://econpapers.repec.org/paper/agseureia/272176.htm
+      \verb https://EconPapers.repec.org/RePEc:ags:eureia:272176
       \endverb
       \verb{url}
-      \verb https://econpapers.repec.org/paper/agseureia/272176.htm
+      \verb https://EconPapers.repec.org/RePEc:ags:eureia:272176
+      \endverb
+      \keyw{Agricultural and Food Policy; Research Methods/ Statistical Methods}
+    \endentry
+    \entry{Zaidi}{article}{}
+      \name{author}{3}{}{%
+        {{hash=f1f105b8edf4f7030afc994d7cee6d95}{%
+           family={Zaidi},
+           familyi={Z\bibinitperiod},
+           given={Ichraf},
+           giveni={I\bibinitperiod}}}%
+        {{hash=b6f7bf9937e6413a417d8c40b167e320}{%
+           family={Mrad},
+           familyi={M\bibinitperiod},
+           given={Mehdi},
+           giveni={M\bibinitperiod}}}%
+        {{hash=96e8262cc50e3baf246e5e297eea869f}{%
+           family={Ladhari},
+           familyi={L\bibinitperiod},
+           given={Talel},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{4ca523ede1fd6367841fc279699b2adb}
+      \strng{fullhash}{4ca523ede1fd6367841fc279699b2adb}
+      \strng{bibnamehash}{4ca523ede1fd6367841fc279699b2adb}
+      \strng{authorbibnamehash}{4ca523ede1fd6367841fc279699b2adb}
+      \strng{authornamehash}{4ca523ede1fd6367841fc279699b2adb}
+      \strng{authorfullhash}{4ca523ede1fd6367841fc279699b2adb}
+      \field{sortinit}{Z}
+      \field{sortinithash}{8f7b480688e809b50b6f6577b16f3db5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-1-4673-5812-5}
+      \field{journaltitle}{2013 5th International Conference on Modeling, Simulation and Applied Optimization, ICMSAO 2013}
+      \field{month}{04}
+      \field{title}{Genetic local search algorithm for minimizing the total completion time in single machine scheduling problem with release dates and precedence constraints}
+      \field{year}{2013}
+      \field{pages}{1\bibrangedash 4}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1109/ICMSAO.2013.6552617
       \endverb
     \endentry
   \enddatalist

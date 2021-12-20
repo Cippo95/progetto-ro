@@ -7,6 +7,7 @@
 %\usepackage{listings}
 %\usepackage{svg}
 %\usepackage{pdfpages}
+\usepackage{hyperref}
 \usepackage{biblatex}
 \addbibresource{sample.bib}
 
@@ -26,7 +27,10 @@ Ho scelto il progetto numero 53 \textbf{``Single machine scheduling, weighted co
 \textit{``Sono dati n jobs J=\{$j_1$..$j_n$\} di cui è noto per ciascuno il tempo di esecuzione $d^j$ e il peso $w^j$ (non correlato con $d^j$). Inoltre esistono delle regole di precedenza fra coppie di jobs descritte da un grafo aciclico. Il tempo di completamento del job j, $C^j$ è definito come l’istante di fine lavorazione del job. Ogni job, una volta iniziata la lavorazione, va portato a termine senza interruzioni. Si determini la sequenza di esecuzione dei jobs sull’unica macchina disponibile che minimizza la somma pesata dei tempi di completamento dei jobs nel rispetto delle precedenze.''}
 \medskip
 
-Ho scritto il codice per fornire una soluzione ammissibile al problema in Java.
+Ho scritto il codice che fornisce una soluzione ammissibile in Java, si trova su GitHub al seguente indirizzo:
+
+\medskip
+\url{https://github.com/Cippo95/progetto-ro}
 
 \section{Come usare il codice}
 
@@ -170,7 +174,7 @@ Spiego cosa fa per blocchi, si possono riconoscere guardando i commenti nel codi
 \item{Stampo i tempi di completamento dei job.}
 \end{enumerate}
 
-\section{Commenti finali}
+\section{Alcuni commenti}
 
 \subsection{Caricamento da file}
 Come detto ho aggiunto la capacità di caricare da file \textit{csv} dei lavori, basta scrivere i vari campi separati da virgole: il nome, la durata, il valore e le varie precedenze (queste separate da ``;'').
@@ -178,12 +182,84 @@ Come accennato bisogna avere premura che le precedenze siano un grafo aciclico, 
 \subsection{Il grafico .dot}
 Per vedere il grafico bisogna avere qualche programma capace di interpretare il linguaggio dot: io uso \textit{XDot}, ma ci sono anche utility online.
 Il grafico, oltre ad essere carino, può aiutare ad individuare cicli in caso le precedenze non rispettino i vincoli propri di un \textit{dag}.
+
+Se interessati al linguaggio dot:
+
+\medskip
+\url{https://en.wikipedia.org/wiki/DOT_(graph_description_language)}
+
 \subsection{Il modello matematico}
 Non ci ho pensato molto quindi spero che il mio ragionamento sia corretto: direi che si può creare prendendo il modello del problema $1||\sum_j w_j C_j$ visto alla slide 33 di \textit{11a.EuristicheGreedy\_2021.ppt} e aggiungendo dei vincoli come disequazioni sui tempi di esecuzione dei job che ne limitino l'esecuzione dopo i job a cui devono dare la precedenza, stile: $t_{j_1} \geq t_{j_2} + d_{j_2} \forall j_1,j_2 \in J$ (come viene fatto coi \textit{task} alla slide n.90 di \textit{09.Flussi1\_2021.ppt}). Credo quindi serva anche un lavoro finto $j_0$ che esegua al tempo 0, di durata 0 e quindi \textit{ratio} 0.
-\subsection{Ottimalità della soluzione (?)}
-La soluzione fornita dal mio programma è solo una soluzione ammissibile, si può vedere facilmente che non sarebbe ottima in caso un job \textit{ready} abbia \textit{ratio} maggiore di un altro \textit{ready} e da lui dipendono altri job a \textit{ratio} molto basso (se è così il valore $>>$ durata e quindi farli prima minimizza la somma pesata) che quindi non partono quando invece sarebbe stato conveniente far partire lui anche se peggiore e aggiungere gli altri job\ldots se non avessero altre dipendenze! il che fa capire che il problema è difficile.
-Cercando online infatti il problema è stato dimostrato \textit{NP-Hard}\cite{np-hard}, dovrei quindi immaginare un procedimento un po' più complesso della mia semplice greedy costruttiva per avere una soluzione migliore.
-Probabilmente la strada migliore sarebbe quella di affidarsi a qualche tool di ricerca operativa, sto dando un'occhiata agli ``OR-Tools'' della Google, però probabilmente non farò in tempo a riadattare il mio progetto con questi tool.
+
+\subsection{Qualità della soluzione}
+
+La soluzione fornita dal mio programma attraverso la greedy è non ottima, viene sempre data la precedenza ai job a ratio minore, non considerando i job nelle precedenze: potrebbero essere presenti dei job molto buoni che aspettano dei job \textit{ready} con ratio peggiore rispetto agli altri dello stesso turno. Avrebbe quindi senso in certi casi far eseguire dei job peggiori del migliore in un dato turno: bisognerebbe valutare le qualità dei job che stanno aspettando quelli correnti.
+
+Sono stati dimostrati metodi efficienti che risolvono il problema all'ottimo in caso che questo abbia precedenze particolari, ad esempio delle catene o degli alberi\cite{Baev}.
+
+In caso di precedenze casuali, senza una struttura particolare, ma sempre acicliche per garantire l'ammissibilità, il problema è stato dimostrato \textit{NP-Hard}\cite{Baev}\cite{Lenstra}.
+
+Per avere soluzioni migliori quindi dovrei irrobustire la mia greedy o applicare delle metaeuristiche, ma al tempo dell'esame mi sono fermato alla greedy.
+
+\section{Lavori post-esame}
+
+Nei paper che letto (velocemente) fino ad ora, se ho capito bene venivano esplorati casi di euristiche più o meno robuste: non venivano affrontate metaeuristiche.
+
+Inizialmente ragionandoci su, una ricerca locale sulla soluzione greedy o su una soluzione con randomicità nella scelta dei job \textit{ready} (in stile \textit{GRASP}) non mi ispirava troppo.
+
+Come possibile intorno alla ricerca mi immaginavo un semplice swap tra lavori e non credevo portasse a molto. Ho testato questo sulla soluzione greedy, per esempio usando l'esempio di caso pessimo (file che riporto nel repository) e non cambiava nulla, perché questo intorno, che io esploro esaustivamente, non gode della proprietà di raggiungibilità. Magari in casi diversi avrebbe funzionato ma in questo semplice caso\ldots no.
+
+Continuando a ragionare, ho notato che gli algoritmi genetici mi ispiravano per questo problema. Prima di partire con l'implementazione ho fatto qualche ricerca e ho trovato uno studio recente a riguardo\cite{Zaidi}.
+
+Il problema mostrato nel paper è estremamente simile al mio e mi ha ispirato a continuare il progetto\ldots a questo punto per sfizio personale.
+
+L'algoritmo genetico che ho implementato si ispira a quanto fatto nel paper, consiglio di leggere il paper velocemente per cogliere le differenze: 
+
+\begin{enumerate}
+\item{Crea la popolazione iniziale con l'individuo generato dalla greedy e il resto random (buona enumerazione).}
+\item{Seleziona due genitori con \textit{binary tournament scheme}: se ho capito bene si scelgono a caso due genitori (e l'ho implementato così).}
+\item{Genera un figlio applicando il crossover:}
+\begin{itemize}
+\item{Il crossover \textit{ad un punto}: eredito la prima parte dal padre e il resto dei lavori per \textit{posizione relativa} (come fatto a lezione nella GA per il TSP).}
+\item{Dopo il crossover controllo l'ammissibilità.}
+\item{Nel paper viene anche fatta una mutazione, io la salto (scelta sicuramente opinabile).}
+\end{itemize}
+\item{Se il figlio è ammissibile valuta la fitness del figlio, in caso contrario riparto dallo step 2.}
+\item{Applica una ricerca locale sul figlio: la faccio esaustiva di tipo swap e la faccio più volte seguendo una filosofia simile alla \textit{Variable Depth Search}\ldots questo step è sicuramente estremamente pesante (a seconda dei parametri messi).}
+\item{Sostituisce il peggiore membro della popolazione col figlio (se è effettivamente peggiore del figlio).}
+\item{In caso il figlio sia il migliore della popolazione aggiorna la migliore soluzione.}
+\item{Se uno dei criteri di stop è raggiunto ritorna la miglior soluzione altrimenti ritorna allo step 2: i criteri di stop sono un tot di generazioni a priori (nel paper sono 100*numero di lavori) o tot generazioni senza miglioramento (nel paper 10*numeri di job), quest'ultimo lo devo ancora implementare.}
+\end{enumerate}
+
+Sto ottenendo buoni risultati dove la soluzione greedy alle volte viene migliorata anche di molto.
+
+Devo però fare refactoring del codice, scegliere bene alcuni parametri e controllare che tutto funzioni bene.
+
+I tempi di calcolo per l'algoritmo genetico sono estremamente più lunghi dell'algoritmo greedy a seconda dell'istanza (e dei parametri da me impostati).
+
+Ho dovuto ristrutturare parecchio il codice, infatti questa nuova versione si troverà in \textit{JobMainGA.java}.
+
+Aggiornerò i file di progetto (e probabilmente anche questo documento) su GitHub una volta finito\ldots direi in un paio di giorni.
+
+\section{Dove trovare i paper}
+Spesso i paper si trovano su siti che richiedono di creare un account o pagare\ldots cercando bene ci sono siti che li rendono pubblicamente consultabili e scaricabili.
+
+Paper su 2-machine scheduling,ma parla ampiamente del problema di single machine scheduling, degli algoritmi ottimi per precedenze particolari e altro\cite{Baev}:
+
+\medskip
+\url{https://www.researchgate.net/publication/225108781_An_Experimental_Study_of_Algorithms_for_Weighted_Completion_Time_Scheduling}
+
+\medskip
+Paper che spiega NP-Hardness dei problemi come il mio\cite{Lenstra}: 
+
+\medskip
+\url{https://econpapers.repec.org/paper/agseureia/272176.htm}
+
+\medskip
+Paper sull'uso di algoritmi genetici a problemi simili al mio\cite{Zaidi}: 
+
+\medskip
+\url{https://www.researchgate.net/publication/261035802_Genetic_local_search_algorithm_for_minimizing_the_total_completion_time_in_single_machine_scheduling_problem_with_release_dates_and_precedence_constraints}
 
 \printbibliography
 
